@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "記事メーカー",
+  "short_name": "記事メーカー",
+  "description": "商品紹介の記事とSNS投稿文を作成・保存するアプリ",
+  "lang": "ja-JP",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f3",
+  "theme_color": "#183b32",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

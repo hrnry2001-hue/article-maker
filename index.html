@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#183b32">
+  <meta name="description" content="商品紹介の記事とSNS投稿文を作成・保存するアプリ">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <title>記事メーカー</title>
+  <style>
+    :root { color-scheme: light dark; --bg: light-dark(#f4f6f3,#101815); --surface: light-dark(#fff,#1b2520); --text: light-dark(#17231d,#edf5ef); --muted: light-dark(#65736b,#a9b7ae); --border: light-dark(#dce4dd,#35443b); --accent: #183b32; --accent2: #d5e8d9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif; }
+    .app { min-height: 100dvh; max-width: 780px; margin: 0 auto; padding: 18px 16px calc(28px + env(safe-area-inset-bottom)); }
+    header { display:flex; align-items:center; gap:12px; padding: 12px 2px 22px; }
+    .logo { width:48px; height:48px; border-radius:15px; background:var(--accent); color:#fff; display:grid; place-items:center; font-size:25px; }
+    h1 { font-size:22px; margin:0; letter-spacing:.02em; } .sub { color:var(--muted); font-size:12px; margin-top:4px; }
+    .hero { background:var(--accent); color:#fff; padding:20px; border-radius:22px; margin-bottom:16px; }
+    .hero .eyebrow { font-size:11px; opacity:.78; letter-spacing:.12em; } .hero h2 { margin:7px 0 8px; font-size:23px; line-height:1.35; } .hero p { margin:0; font-size:13px; opacity:.88; line-height:1.65; }
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:17px; margin:14px 0; }
+    h3 { margin:0 0 14px; font-size:16px; }
+    label { display:block; font-size:13px; font-weight:650; margin:12px 0 6px; }
+    input, textarea, select { width:100%; border:1px solid var(--border); border-radius:11px; padding:12px; background:var(--bg); color:var(--text); font:inherit; font-size:14px; }
+    textarea { min-height:74px; resize:vertical; line-height:1.6; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .small { color:var(--muted); font-size:12px; line-height:1.6; }
+    .btnrow { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+    button { border:0; border-radius:12px; padding:12px 15px; font:inherit; font-weight:700; cursor:pointer; }
+    .primary { background:#183b32; color:#fff; flex:1; min-height:48px; }
+    .secondary { background:var(--accent2); color:#183b32; }
+    .quiet { background:transparent; border:1px solid var(--border); color:var(--text); }
+    .result { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:14px; font-size:14px; line-height:1.75; min-height:120px; }
+    .result-title { font-size:13px; color:var(--muted); margin-bottom:7px; }
+    .notice { background:light-dark(#fff7df,#332b17); border:1px solid light-dark(#f0dda3,#6d5c2c); border-radius:12px; padding:12px; font-size:12px; line-height:1.65; }
+    .saved-item { border-top:1px solid var(--border); padding:13px 0; } .saved-item:first-of-type { border-top:0; } .saved-item strong { display:block; margin-bottom:5px; }
+    footer { color:var(--muted); font-size:11px; line-height:1.7; text-align:center; padding:18px 8px; }
+    @media(max-width:480px){ .grid{grid-template-columns:1fr;} .app{padding-left:13px;padding-right:13px;} .hero h2{font-size:21px;} }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header><div class="logo">✍</div><div><h1>記事メーカー</h1><div class="sub">商品紹介・SNS投稿の下書きツール</div></div></header>
+  <section class="hero"><div class="eyebrow">YOUR DAILY CONTENT DESK</div><h2>紹介したい商品を、<br>読みやすい記事に。</h2><p>商品情報を入力すると、X用の紹介文やブログ記事の下書きを作成。下書きはこの端末に保存できます。</p></section>
+  <section class="panel">
+    <h3>01　記事の設定</h3>
+    <label for="genre">ジャンル</label>
+    <select id="genre"><option>日替わり・便利グッズ</option><option>生活用品</option><option>文房具・筆記具</option><option>キャンプ用品</option><option>漫画・映画関連</option><option>その他</option></select>
+    <div class="grid"><div><label for="format">出力形式</label><select id="format"><option value="x">X投稿用</option><option value="blog">ブログ記事用</option><option value="both">両方</option></select></div><div><label for="tone">文章の雰囲気</label><select id="tone"><option value="practical">実用性重視</option><option value="friendly">親しみやすい</option><option value="compare">比較・検討型</option></select></div></div>
+  </section>
+  <section class="panel">
+    <h3>02　商品情報</h3>
+    <label for="product">商品名 *</label><input id="product" placeholder="例：真空断熱タンブラー">
+    <label for="features">特徴・便利な点 *</label><textarea id="features" placeholder="例：保温・保冷に対応、結露しにくい。商品ページなどで確認した内容を入力。"></textarea>
+    <div class="grid"><div><label for="price">価格（任意）</label><input id="price" placeholder="例：2,500円"></div><div><label for="rating">評価・レビュー（任意）</label><input id="rating" placeholder="確認済みの情報だけ入力"></div></div>
+    <label for="reader">おすすめしたい人（任意）</label><input id="reader" placeholder="例：毎日職場に飲み物を持っていく人">
+    <label for="link">商品リンク（任意）</label><input id="link" type="url" placeholder="https://...">
+    <label for="tracking">トラッキングID</label><input id="tracking" value="hrnry0999-22" placeholder="あなたのAmazonアソシエイトID">
+    <div class="btnrow"><button class="primary" id="generate">✦ 記事の下書きを作る</button></div>
+    <p class="small">この配布版は入力内容をもとに文章テンプレートを作ります。インターネット検索やAI APIとの接続はまだ含まれていません。</p>
+  </section>
+  <section class="panel" id="outputPanel">
+    <h3>03　生成した下書き</h3>
+    <div class="result-title">記事プレビュー</div><div class="result" id="output">商品情報を入力し、「記事の下書きを作る」を押してください。</div>
+    <div class="btnrow"><button class="secondary" id="copy">文章をコピー</button><button class="quiet" id="save">下書きを保存</button><button class="quiet" id="openLink">商品ページを開く</button></div>
+    <p class="small" id="status" aria-live="polite"></p>
+  </section>
+  <section class="panel"><h3>04　保存した下書き</h3><div id="saved"><p class="small">保存した下書きはここに表示されます。</p></div><div class="btnrow"><button class="quiet" id="export">下書きをテキストで書き出す</button><button class="quiet" id="clear">保存データを消去</button></div></section>
+  <section class="panel"><h3>ホーム画面への追加</h3><p class="small">公開後、このページをAndroidのChromeで開き、右上の「︙」メニューから「アプリをインストール」または「ホーム画面に追加」を選んでください。表示はChromeのバージョンなどで異なる場合があります。</p><div class="notice">公開前の注意：本アプリは下書き作成用です。商品情報・価格・評価・レビュー数を自動で取得する機能や、毎日の定時実行機能はまだありません。公開リポジトリにAPIキーやパスワードを記載しないでください。</div></section>
+  <footer>記事メーカー · 下書きはブラウザ内に保存されます。ブラウザデータを消去すると失われる場合があります。<br>Amazonアソシエイトのリンクは、規約に沿った正しいリンクか公開前に確認してください。</footer>
+</div>
+<script>
+  const $ = id => document.getElementById(id);
+  let currentDraft = '';
+  function makeDraft() {
+    const product = $('product').value.trim();
+    const features = $('features').value.trim();
+    if (!product || !features) { $('status').textContent = '商品名と特徴を入力してください。'; return; }
+    const genre = $('genre').value;
+    const price = $('price').value.trim();
+    const rating = $('rating').value.trim();
+    const reader = $('reader').value.trim();
+    const link = $('link').value.trim();
+    const tone = $('tone').value;
+    const format = $('format').value;
+    const intro = tone === 'friendly' ? '毎日のちょっとした不便を減らしたい人に、気になるアイテムを紹介します。' : tone === 'compare' ? '商品を選ぶときは、機能・使う場面・価格のバランスを確認するのがポイントです。' : '日々の暮らしを少し便利にしてくれそうなアイテムをチェック。';
+    const details = [`商品名：${product}`, `ジャンル：${genre}`, `特徴：${features}`, price ? `価格：${price}` : '', rating ? `評価・レビュー：${rating}` : '', reader ? `おすすめしたい人：${reader}` : ''].filter(Boolean).join('\n');
+    const disclosure = '※価格・在庫・評価は変わることがあります。購入前に商品ページで最新情報をご確認ください。';
+    const xpost = `【気になる商品】${product}\n\n${intro}\n\n${features}${reader ? `\n\nこんな人に：${reader}` : ''}${price ? `\n\n価格の目安：${price}` : ''}\n\n詳しくはこちら：${link || '（商品リンクを設定してください）'}\n\n${disclosure}\n\n#商品紹介 #便利グッズ`;
+    const blog = `# ${product}の紹介｜特徴と選ぶときのポイント\n\n${intro}\n\n## 商品の基本情報\n\n${details}\n\n## 注目したいポイント\n\n${features}\n\n## こんな人におすすめ\n\n${reader || '商品の特徴が自分の使い方に合うか、購入前に確認してみましょう。'}\n\n## 購入前に確認したいこと\n\n価格、在庫、サイズ、対応条件、最新のレビューなどを商品ページで確認しましょう。\n\n${link ? `商品ページ：${link}\n\n` : ''}${disclosure}\n\n※本記事は入力された情報をもとに作成した下書きです。公開前に内容とリンクを確認してください。`;
+    currentDraft = format === 'x' ? xpost : format === 'blog' ? blog : `【X投稿案】\n${xpost}\n\n--------------------\n\n【ブログ記事案】\n${blog}`;
+    $('output').textContent = currentDraft;
+    $('status').textContent = '下書きを作成しました。内容を確認してから保存・公開してください。';
+  }
+  function getSaved() { try { return JSON.parse(localStorage.getItem('article-maker-drafts') || '[]'); } catch { return []; } }
+  function renderSaved() {
+    const list = getSaved();
+    $('saved').innerHTML = '';
+    if (!list.length) { $('saved').innerHTML = '<p class="small">保存した下書きはここに表示されます。</p>'; return; }
+    list.forEach((item, i) => {
+      const wrap = document.createElement('div'); wrap.className = 'saved-item';
+      const title = document.createElement('strong'); title.textContent = item.title;
+      const date = document.createElement('div'); date.className = 'small'; date.textContent = item.date;
+      const btns = document.createElement('div'); btns.className = 'btnrow';
+      const view = document.createElement('button'); view.className = 'quiet'; view.textContent = '表示'; view.onclick = () => { currentDraft = item.text; $('output').textContent = item.text; $('status').textContent = '保存した下書きを表示しています。'; window.scrollTo({top:$('outputPanel').offsetTop,behavior:'smooth'}); };
+      const del = document.createElement('button'); del.className = 'quiet'; del.textContent = '削除'; del.onclick = () => { const a = getSaved(); a.splice(i,1); localStorage.setItem('article-maker-drafts',JSON.stringify(a)); renderSaved(); };
+      btns.append(view,del); wrap.append(title,date,btns); $('saved').append(wrap);
+    });
+  }
+  $('generate').addEventListener('click', makeDraft);
+  $('copy').addEventListener('click', async () => { if (!currentDraft) { $('status').textContent='先に下書きを作成してください。'; return; } try { await navigator.clipboard.writeText(currentDraft); $('status').textContent='コピーしました。'; } catch { $('status').textContent='コピーできませんでした。文章を長押しして選択してください。'; } });
+  $('save').addEventListener('click', () => { if (!currentDraft) { $('status').textContent='先に下書きを作成してください。'; return; } const a=getSaved(); a.unshift({title:$('product').value.trim() || '商品紹介', text:currentDraft, date:new Date().toLocaleString('ja-JP')}); localStorage.setItem('article-maker-drafts',JSON.stringify(a.slice(0,50))); renderSaved(); $('status').textContent='この端末に下書きを保存しました。'; });
+  $('openLink').addEventListener('click', () => { const u=$('link').value.trim(); if (/^https:\/\//i.test(u)) window.open(u,'_blank','noopener'); else $('status').textContent='https:// から始まる商品ページURLを入力してください。'; });
+  $('export').addEventListener('click', () => { const a=getSaved(); if(!a.length){$('status').textContent='書き出す下書きがありません。';return;} const blob=new Blob([a.map(x=>`# ${x.title}\n${x.date}\n\n${x.text}`).join('\n\n====================\n\n')],{type:'text/plain;charset=utf-8'}); const url=URL.createObjectURL(blob); const el=document.createElement('a'); el.href=url; el.download='article-drafts.txt'; el.click(); URL.revokeObjectURL(url); });
+  $('clear').addEventListener('click', () => { if(confirm('このブラウザに保存した下書きをすべて削除しますか？')) { localStorage.removeItem('article-maker-drafts'); renderSaved(); $('status').textContent='保存データを削除しました。'; } });
+  renderSaved();
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>
